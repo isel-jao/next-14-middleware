@@ -9,24 +9,18 @@ import type { NextRequest } from "next/server";
 // - Set response cookies
 // - Set response headers
 
+// ! Avoid setting large headers as it might cause 431
 export async function middleware(request: NextRequest) {
-  const { cookies } = request;
-  const { pathname } = request.nextUrl;
-  console.log({ pathname, cookies });
+  const { headers } = request;
 
-  const response = NextResponse.next();
+  headers.set("hello", "hello from next");
 
-  // response.cookies.delete("next-auth.session-token");
-  // response.cookies.delete("__client_uat");
-  // response.cookies.delete("__session");
-  response.cookies.set("isel", "jao");
-  // response.cookies.set({
-  //   name: "issam",
-  //   value: "el jaouhary",
-  //   path: "/about",
-  //   expires: new Date(Date.now() + 1000 * 30),
-  // });
-  console.log({ hasIssam: request.cookies.has("issam") });
+  const response = NextResponse.next({
+    request: {
+      headers,
+    },
+  });
+  response.headers.set("hi", "hi from next");
 
   return response;
 }
